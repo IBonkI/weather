@@ -1,32 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
-
+const API_URL = `${import.meta.env.VITE_OPEN_WEATHER_API_URL}?lat=48.52961&lon=12.16179&lang=de&appid=${import.meta.env.VITE_OPEN_WEATHER_API_KEY}`
 function App() {
-  const [count, setCount] = useState(0)
+  const [weatherData, setWeatherData] = useState();
+
+  useEffect(() => {
+    fetch(API_URL).then(res => res.json()).then(data => setWeatherData(data))
+  }, [API_URL])
+
+  const getDateFromUnix = (timestamp) => {
+    const date = new Date(timestamp * 1000)
+   return date.toUTCString()
+  } 
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      fasdflöajsdfölj
+      fasdf
+      {weatherData && (
+        <>
+          <h1>Wetter: {weatherData.weather[0].description}</h1>
+          <h2>Icon: <img src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}/></h2>
+          <h3>Datum: {getDateFromUnix(weatherData.dt)}</h3>
+        </>
+      )}
     </div>
   )
 }
