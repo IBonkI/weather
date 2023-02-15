@@ -1,2 +1,0 @@
-# weather
-Created with CodeSandbox
