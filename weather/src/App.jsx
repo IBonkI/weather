@@ -54,6 +54,7 @@ function App() {
   // cityName is optional when loading from history
   const fetchWeatherData = (cityName) => {
     const query = cityName || cityQuery
+    console.log(query)
     let isOk = false
     query && fetch(getApiUrl(query.replace(' ', '+')))
       .then(res => {
@@ -102,6 +103,7 @@ function App() {
       </form>
       {weatherData && (
         <>
+          <h1>{weatherData.name}</h1>
           <h1>Wetter: {weatherData.weather[0].description}</h1>
           <h2>Icon: <img src={getWeatherIcon(weatherData.weather[0].icon)} /></h2>
           <h2>Temperatur: {Math.floor(weatherData.main.temp)}°C</h2>
