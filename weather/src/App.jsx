@@ -51,6 +51,29 @@ function App() {
     addCityToHistory(data.city.name)
   }
 
+  const groupForecastByDay = (forecast) => {
+    // [[], []]
+    const groupedForecast = [[]]
+
+    let lastDateChecked
+    let currentIndex = 0
+
+    forecast.forEach((f) => {
+      const dateDay = getDateFromUnix(f.dt).getDate()
+      console.log(dateDay)
+      if (!lastDateChecked || lastDateChecked === dateDay) {
+        lastDateChecked = dateDay
+        groupedForecast[currentIndex].push(f)
+        return
+      }
+      lastDateChecked = dateDay
+      groupedForecast.push([f])
+      currentIndex++
+    })
+
+    return groupedForecast
+  }
+
   // cityName is optional when loading from history
   const fetchWeatherData = (cityName) => {
     const query = cityName || cityQuery
@@ -69,7 +92,8 @@ function App() {
         if (!isOk) {
           return;
         }
-
+        const groupedForecast = groupForecastByDay(data.list)
+        console.log(groupedForecast)
         handleSetWeatherData(data)
       })
   }
@@ -86,8 +110,7 @@ function App() {
   }
 
   const getDateFromUnix = (timestamp) => {
-    const date = new Date(timestamp * 1000)
-    return date.toUTCString()
+    return new Date(timestamp * 1000)
   }
 
   const handleClickHistory = (cityName) => {
@@ -107,7 +130,7 @@ function App() {
           <h1>Wetter: {weatherData.list[0].weather[0].description}</h1>
           <h2>Icon: <img src={getWeatherIcon(weatherData.list[0].weather[0].icon)} /></h2>
           <h2>Temperatur: {Math.floor(weatherData.list[0].main.temp)}°C</h2>
-          <h3>Datum: {getDateFromUnix(weatherData.list[0].dt)}</h3>
+          <h3>Datum: {getDateFromUnix(weatherData.list[0].dt).toUTCString()}</h3>
         </>
       )}
 
