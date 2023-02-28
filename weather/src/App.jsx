@@ -28,7 +28,7 @@ function App() {
     const indexOfCity = newCityHistory.indexOf(cityName)
 
     if (indexOfCity > -1) {
-      delete newCityHistory[indexOfCity]
+      newCityHistory.splice(indexOfCity, 1)
     }
 
     newCityHistory.push(cityName)
@@ -48,7 +48,7 @@ function App() {
       return;
     }
     setWeatherData(data)
-    addCityToHistory(data.name)
+    addCityToHistory(data.city.name)
   }
 
   // cityName is optional when loading from history
@@ -103,11 +103,11 @@ function App() {
       </form>
       {weatherData && (
         <>
-          <h1>{weatherData.name}</h1>
-          <h1>Wetter: {weatherData.weather[0].description}</h1>
-          <h2>Icon: <img src={getWeatherIcon(weatherData.weather[0].icon)} /></h2>
-          <h2>Temperatur: {Math.floor(weatherData.main.temp)}°C</h2>
-          <h3>Datum: {getDateFromUnix(weatherData.dt)}</h3>
+          <h1>{weatherData.city.name}</h1>
+          <h1>Wetter: {weatherData.list[0].weather[0].description}</h1>
+          <h2>Icon: <img src={getWeatherIcon(weatherData.list[0].weather[0].icon)} /></h2>
+          <h2>Temperatur: {Math.floor(weatherData.list[0].main.temp)}°C</h2>
+          <h3>Datum: {getDateFromUnix(weatherData.list[0].dt)}</h3>
         </>
       )}
 
