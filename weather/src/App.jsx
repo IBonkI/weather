@@ -13,6 +13,7 @@ function App() {
   const [weatherData, setWeatherData] = useState();
   const [cityQuery, setCityQuery] = useState('');
   const [cityHistory, setCityHistory] = useState([]);
+  const [dayForForecast, setDayForForecast] = useState(0);
 
 
   useEffect(() => {
@@ -52,7 +53,6 @@ function App() {
   }
 
   const groupForecastByDay = (forecast) => {
-    // [[], []]
     const groupedForecast = [[]]
 
     let lastDateChecked
@@ -60,7 +60,6 @@ function App() {
 
     forecast.forEach((f) => {
       const dateDay = getDateFromUnix(f.dt).getDate()
-      console.log(dateDay)
       if (!lastDateChecked || lastDateChecked === dateDay) {
         lastDateChecked = dateDay
         groupedForecast[currentIndex].push(f)
@@ -93,8 +92,7 @@ function App() {
           return;
         }
         const groupedForecast = groupForecastByDay(data.list)
-        console.log(groupedForecast)
-        handleSetWeatherData(data)
+        handleSetWeatherData({ ...data, list: groupedForecast })
       })
   }
 
@@ -118,6 +116,16 @@ function App() {
     fetchWeatherData(cityName)
   }
 
+  // a and b are javascript Date objects
+  function dateDiffInDays(a, b) {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  }
+
   return (
     <div className="App">
       <form onSubmit={handleSubmit}>
@@ -127,10 +135,41 @@ function App() {
       {weatherData && (
         <>
           <h1>{weatherData.city.name}</h1>
-          <h1>Wetter: {weatherData.list[0].weather[0].description}</h1>
-          <h2>Icon: <img src={getWeatherIcon(weatherData.list[0].weather[0].icon)} /></h2>
-          <h2>Temperatur: {Math.floor(weatherData.list[0].main.temp)}°C</h2>
-          <h3>Datum: {getDateFromUnix(weatherData.list[0].dt).toUTCString()}</h3>
+          <h1>Wetter: {weatherData.list[0][0].weather[0].description}</h1>
+          <h2>Icon: <img src={getWeatherIcon(weatherData.list[0][0].weather[0].icon)} /></h2>
+          <h2>Temperatur: {Math.floor(weatherData.list[0][0].main.temp)}°C</h2>
+          <h3>Datum: {getDateFromUnix(weatherData.list[0][0].dt).toUTCString()}</h3>
+
+          {weatherData.list.map((hourlyForecasts, i) => {
+            const date = getDateFromUnix(hourlyForecasts[0].dt)
+            let weekday = date.toLocaleDateString('de-DE', { weekday: 'long' })
+
+            const dayDiff = dateDiffInDays(date, new Date());
+
+            if (dayDiff === 0) {
+              weekday = 'Heute'
+            }
+            if (dayDiff === -1) {
+              weekday = 'Morgen'
+            }
+            return <button style={dayForForecast === i ? { backgroundColor: 'red' } : {}} onClick={() => setDayForForecast(i)}>{weekday}</button>
+          })}
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {weatherData.list[dayForForecast].map(forecast => {
+              return (
+                <div style={{
+                  border: 'solid 1px grey', display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}>
+                  <span>{getDateFromUnix(forecast.dt).toLocaleTimeString('de-DE', { hour: 'numeric', minute: 'numeric' })}</span>
+                  <img src={getWeatherIcon(forecast.weather[0].icon)} />
+                  <span style={{ fontWeight: 'bold' }}>{Math.floor(forecast.main.temp)}°</span>
+                </div>
+              )
+            })}
+          </div>
+
         </>
       )}
 
