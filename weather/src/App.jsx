@@ -126,6 +126,8 @@ function App() {
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
   }
 
+  const getTimeForecastIndexForMiddle = weatherData && weatherData.list[dayForForecast].length - 1 < 5 ? weatherData.list[dayForForecast].length - 1 : 5
+
   return (
     <div className="App">
       <form onSubmit={handleSubmit}>
@@ -134,11 +136,6 @@ function App() {
       </form>
       {weatherData && (
         <>
-          <h1>{weatherData.city.name}</h1>
-          <h1>Wetter: {weatherData.list[0][0].weather[0].description}</h1>
-          <h2>Icon: <img src={getWeatherIcon(weatherData.list[0][0].weather[0].icon)} /></h2>
-          <h2>Temperatur: {Math.floor(weatherData.list[0][0].main.temp)}°C</h2>
-          <h3>Datum: {getDateFromUnix(weatherData.list[0][0].dt).toUTCString()}</h3>
 
           {weatherData.list.map((hourlyForecasts, i) => {
             const date = getDateFromUnix(hourlyForecasts[0].dt)
@@ -154,6 +151,35 @@ function App() {
             }
             return <button style={dayForForecast === i ? { backgroundColor: 'red' } : {}} onClick={() => setDayForForecast(i)}>{weekday}</button>
           })}
+
+          <h1>{weatherData.city.name}</h1>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <img src={getWeatherIcon(weatherData.list[dayForForecast][getTimeForecastIndexForMiddle].weather[0].icon)} />
+              <span>{Math.floor(weatherData.list[dayForForecast][getTimeForecastIndexForMiddle].main.temp)}°C</span>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+            }}>
+              <span>Wetter</span>
+              <span>{getDateFromUnix(weatherData.list[dayForForecast][getTimeForecastIndexForMiddle].dt).toLocaleDateString('de-DE', { weekday: 'long' })}</span>
+              <span>{weatherData.list[dayForForecast][getTimeForecastIndexForMiddle].weather[0].description}</span>
+            </div>
+
+          </div>
+
+
+
           <div style={{ display: 'flex', gap: '10px' }}>
             {weatherData.list[dayForForecast].map(forecast => {
               return (
@@ -163,7 +189,8 @@ function App() {
                   alignItems: 'center'
                 }}>
                   <span>{getDateFromUnix(forecast.dt).toLocaleTimeString('de-DE', { hour: 'numeric', minute: 'numeric' })}</span>
-                  <img src={getWeatherIcon(forecast.weather[0].icon)} />
+                  {/* TODO: ugly */}
+                  <img style={{ margin: '-10px 0' }} src={getWeatherIcon(forecast.weather[0].icon)} />
                   <span style={{ fontWeight: 'bold' }}>{Math.floor(forecast.main.temp)}°</span>
                 </div>
               )
