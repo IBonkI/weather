@@ -1,25 +1,24 @@
-import React, { useState } from 'react'
+import { useState } from "react";
 
 export const CitySearch = ({ onSubmit }) => {
-    const [cityQuery, setCityQuery] = useState('');
+  const [cityQuery, setCityQuery] = useState("");
 
+  const handleChangeInput = (e) => {
+    setCityQuery(e.target.value);
+  };
 
-    const handleChangeInput = (e) => {
-        setCityQuery(e.target.value)
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    onSubmit(cityQuery);
 
-        onSubmit(cityQuery)
+    setCityQuery("");
+  };
 
-        setCityQuery('')
-    }
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <input value={cityQuery || ''} onChange={handleChangeInput} />
-            <button type="submit">Submit</button>
-        </form>
-    )
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={cityQuery || ""} onChange={handleChangeInput} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
