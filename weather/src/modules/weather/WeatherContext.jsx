@@ -13,15 +13,10 @@ const WeatherContext = createContext()
 export const WeatherProvider = ({ children }) => {
     const [weatherData, setWeatherData] = useState();
     const [forecastDay, setForecastDay] = useState(0);
-    const [onFetch, setOnFetch] = useState();
-    const { addCityToHistory } = useHistory()
 
-    const onFetchWeatherData = (cb) => {
-        setOnFetch(cb)
-    }
 
     // cityName is optional when loading from history
-    const fetchWeatherData = (cityName) => {
+    const fetchWeatherData = (cityName, cb) => {
         // const query = cityName || cityQuery
         const query = cityName
         console.log(query)
@@ -41,8 +36,7 @@ export const WeatherProvider = ({ children }) => {
                 }
                 const groupedForecast = groupForecastByDay(data.list)
                 setWeatherData({ ...data, list: groupedForecast })
-                // TODO: Think of better way to be more generic
-                addCityToHistory(data.city.name)
+                cb(data)
             })
     }
 
@@ -52,7 +46,6 @@ export const WeatherProvider = ({ children }) => {
         forecastDay,
         setForecastDay,
         fetchWeatherData,
-        onFetchWeatherData
     }
 
     return <WeatherContext.Provider value={context}>{children}</WeatherContext.Provider>

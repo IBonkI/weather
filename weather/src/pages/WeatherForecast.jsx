@@ -1,5 +1,3 @@
-import { useState, useCallback, useEffect } from 'react'
-import { Star, XCircle } from 'react-bootstrap-icons'
 import { CitySearch } from '../modules/search/CitySearch'
 import { CitySearchHistory } from '../modules/search/CitySearchHistory'
 import { useHistory } from '../modules/search/SearchContext'
@@ -13,10 +11,17 @@ import { useWeather } from '../modules/weather/WeatherContext'
 export const WeatherForecast = () => {
     const { fetchWeatherData, weatherData } = useWeather()
 
+    const { addCityToHistory } = useHistory()
+
+    const fetchAndAddToHistory = (cityName) => {
+        fetchWeatherData(cityName, (data) => {
+            addCityToHistory(data.city.name)
+        })
+    }
 
     return (
         <div className="App" style={{ flex: 1 }}>
-            <CitySearch onSubmit={fetchWeatherData} />
+            <CitySearch onSubmit={fetchAndAddToHistory} />
             {weatherData && (
                 <>
 
@@ -28,7 +33,7 @@ export const WeatherForecast = () => {
 
                 </>
             )}
-            <CitySearchHistory onClick={fetchWeatherData} />
+            <CitySearchHistory onClick={fetchAndAddToHistory} />
         </div>
     )
 }
