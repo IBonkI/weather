@@ -1,18 +1,40 @@
+import { Col, Row } from "react-bootstrap";
 import { getDateFromUnix } from "../utils/date";
 import { getWeatherIcon } from "./weather.utils";
 import { useWeather } from "./WeatherContext";
 
 export const CurrentWeather = () => {
-  const { weatherData, forecastDay } = useWeather();
+  const { weatherData, forecastDay, currentWeatherData } = useWeather();
 
   const getTimeForecastIndexForMiddle =
     weatherData && weatherData.list[forecastDay].length - 1 < 5
       ? weatherData.list[forecastDay].length - 1
       : 5;
 
+  const isToday = forecastDay === 0;
+
+  const weatherSelector = isToday
+    ? currentWeatherData
+    : weatherData.list[forecastDay][getTimeForecastIndexForMiddle];
+
+  if (!weatherData || !currentWeatherData) {
+    return <></>;
+  }
+
   return (
-    <>
+    <div>
       <h1>{weatherData.city.name}</h1>
+      <Row>
+        <Col sm>
+          <img src={getWeatherIcon(weatherSelector.weather[0].icon)} />
+        </Col>
+        <Col sm>
+          <span>
+            {Math.floor(weatherSelector.main.temp)}
+            °C
+          </span>
+        </Col>
+      </Row>
 
       <div
         style={{
@@ -23,45 +45,20 @@ export const CurrentWeather = () => {
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <img
-            src={getWeatherIcon(
-              weatherData.list[forecastDay][getTimeForecastIndexForMiddle]
-                .weather[0].icon
-            )}
-          />
-          <span>
-            {Math.floor(
-              weatherData.list[forecastDay][getTimeForecastIndexForMiddle].main
-                .temp
-            )}
-            °C
-          </span>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
             flexDirection: "column",
             alignItems: "flex-end",
           }}
         >
           <span>Wetter</span>
           <span>
-            {getDateFromUnix(
-              weatherData.list[forecastDay][getTimeForecastIndexForMiddle].dt
-            ).toLocaleDateString("de-DE", { weekday: "long" })}
+            {getDateFromUnix(weatherSelector.dt).toLocaleDateString("de-DE", {
+              weekday: "long",
+              hour: "numeric",
+            })}
           </span>
-          <span>
-            {
-              weatherData.list[forecastDay][getTimeForecastIndexForMiddle]
-                .weather[0].description
-            }
-          </span>
+          <span>{weatherSelector.weather[0].description}</span>
         </div>
       </div>
-    </>
+    </div>
   );
 };

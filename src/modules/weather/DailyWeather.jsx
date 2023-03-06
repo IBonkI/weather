@@ -3,8 +3,12 @@ import { useWeather } from "./WeatherContext";
 
 export const DailyWeather = () => {
   const { weatherData, setForecastDay, forecastDay } = useWeather();
+
+  if (!weatherData) {
+    return <></>;
+  }
   return (
-    <>
+    <div>
       {weatherData.list.map((hourlyForecasts, i) => {
         const date = getDateFromUnix(hourlyForecasts[0].dt);
         let weekday = date.toLocaleDateString("de-DE", { weekday: "long" });
@@ -27,6 +31,6 @@ export const DailyWeather = () => {
           </button>
         );
       })}
-    </>
+    </div>
   );
 };

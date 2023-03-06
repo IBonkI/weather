@@ -12,6 +12,12 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  /* --bs-body-bg: #242424; */
+  --bs-body-bg: url('/assets/sunnywebp.webp');
+  --bs-body-color: rgba(255, 255, 255, 0.87);
+
+  --data-bs-theme: 'dark';
 }
 
 a {
