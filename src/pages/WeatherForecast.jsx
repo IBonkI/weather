@@ -41,7 +41,7 @@ export const WeatherForecast = () => {
             </div>
           </>
         )}
-        <CitySearchHistory onClick={fetchAndAddToHistory} />
+        {/* <CitySearchHistory onClick={fetchAndAddToHistory} /> */}
       </Container>
     </div>
   );

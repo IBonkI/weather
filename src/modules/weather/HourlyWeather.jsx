@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Col, Image, Row } from "react-bootstrap";
 import { getDateFromUnix } from "../utils/date";
 import { getWeatherIcon } from "./weather.utils";
@@ -7,6 +7,7 @@ import "./HourlyWeather.css";
 
 export const HourlyWeather = () => {
   const { weatherData, forecastDay } = useWeather();
+  const [isOverflowing, setIsOverflowing] = useState(false);
 
   const scrollContainer = useRef(null);
 
@@ -25,6 +26,20 @@ export const HourlyWeather = () => {
 
     scrollContainer.current.scrollLeft -= 225;
   };
+
+  useEffect(() => {
+    if (!scrollContainer) {
+      return;
+    }
+
+    if (
+      scrollContainer.current.offsetWidth < scrollContainer.current.scrollWidth
+    ) {
+      return setIsOverflowing(true);
+    }
+
+    return setIsOverflowing(false);
+  }, [scrollContainer, forecastDay]);
 
   if (!weatherData) {
     return <></>;
@@ -87,36 +102,40 @@ export const HourlyWeather = () => {
             </div>
           );
         })}
-        <button
-          onClick={handleScrollRight}
-          style={{
-            position: "absolute",
-            right: -50,
-            top: 0,
-            marginTop: "auto",
-            marginBottom: "auto",
-            bottom: 0,
-            width: "50px",
-            height: "50px",
-          }}
-        >
-          {">"}
-        </button>
-        <button
-          onClick={handleScrollLeft}
-          style={{
-            position: "absolute",
-            left: -50,
-            top: 0,
-            marginTop: "auto",
-            marginBottom: "auto",
-            bottom: 0,
-            width: "50px",
-            height: "50px",
-          }}
-        >
-          {"<"}
-        </button>
+        {isOverflowing && (
+          <>
+            <button
+              onClick={handleScrollRight}
+              style={{
+                position: "absolute",
+                right: -50,
+                top: 0,
+                marginTop: "auto",
+                marginBottom: "auto",
+                bottom: 0,
+                width: "50px",
+                height: "50px",
+              }}
+            >
+              {">"}
+            </button>
+            <button
+              onClick={handleScrollLeft}
+              style={{
+                position: "absolute",
+                left: -50,
+                top: 0,
+                marginTop: "auto",
+                marginBottom: "auto",
+                bottom: 0,
+                width: "50px",
+                height: "50px",
+              }}
+            >
+              {"<"}
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
