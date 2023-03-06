@@ -1,4 +1,4 @@
-import { getDateFromUnix } from "../utils/date";
+import { getDateFromUnix } from '../utils/date';
 
 export const groupForecastByDay = (forecast) => {
   const groupedForecast = [[]];
@@ -21,5 +21,4 @@ export const groupForecastByDay = (forecast) => {
   return groupedForecast;
 };
 
-export const getWeatherIcon = (iconName) =>
-  `https://openweathermap.org/img/wn/${iconName}@2x.png`;
+export const getWeatherIcon = (iconName) => `https://openweathermap.org/img/wn/${iconName}@2x.png`;

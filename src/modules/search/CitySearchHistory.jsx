@@ -1,5 +1,5 @@
-import { Star, XCircle } from "react-bootstrap-icons";
-import { useHistory } from "./SearchContext";
+import { Star, XCircle } from 'react-bootstrap-icons';
+import { useHistory } from './SearchContext';
 
 export const CitySearchHistory = ({ onClick }) => {
   const { cityHistory, clearHistory } = useHistory();
@@ -14,12 +14,10 @@ export const CitySearchHistory = ({ onClick }) => {
         cityHistory.length > 0 &&
         cityHistory.map((c, i) => (
           <span onClick={() => handleClickHistory(c)} key={c + i}>
-            {c} <Star />{" "}
+            {c} <Star />{' '}
           </span>
         ))}
-      {cityHistory && cityHistory.length > 0 && (
-        <XCircle onClick={() => clearHistory()} />
-      )}
+      {cityHistory && cityHistory.length > 0 && <XCircle onClick={() => clearHistory()} />}
     </div>
   );
 };

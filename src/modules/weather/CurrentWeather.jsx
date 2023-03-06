@@ -1,7 +1,7 @@
-import { Col, Row } from "react-bootstrap";
-import { getDateFromUnix } from "../utils/date";
-import { getWeatherIcon } from "./weather.utils";
-import { useWeather } from "./WeatherContext";
+import { Col, Row } from 'react-bootstrap';
+import { getDateFromUnix } from '../utils/date';
+import { getWeatherIcon } from './weather.utils';
+import { useWeather } from './WeatherContext';
 
 export const CurrentWeather = () => {
   const { weatherData, forecastDay, currentWeatherData } = useWeather();
@@ -38,22 +38,20 @@ export const CurrentWeather = () => {
 
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-          }}
-        >
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end'
+          }}>
           <span>Wetter</span>
           <span>
-            {getDateFromUnix(weatherSelector.dt).toLocaleDateString("de-DE", {
-              weekday: "long",
-              hour: "numeric",
+            {getDateFromUnix(weatherSelector.dt).toLocaleDateString('de-DE', {
+              weekday: 'long',
+              hour: 'numeric'
             })}
           </span>
           <span>{weatherSelector.weather[0].description}</span>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const HistoryContext = createContext();
 
@@ -7,11 +7,11 @@ export const HistoryProvider = ({ children }) => {
 
   const clearHistory = () => {
     setCityHistory([]);
-    localStorage.removeItem("cityHistory");
+    localStorage.removeItem('cityHistory');
   };
 
   useEffect(() => {
-    const parsedHistory = JSON.parse(localStorage.getItem("cityHistory"));
+    const parsedHistory = JSON.parse(localStorage.getItem('cityHistory'));
     if (!parsedHistory) {
       return;
     }
@@ -19,7 +19,7 @@ export const HistoryProvider = ({ children }) => {
   }, []);
 
   const addCityToHistory = (cityName) => {
-    console.log("hier drin, cityName", cityName);
+    console.log('hier drin, cityName', cityName);
     const newCityHistory = cityHistory;
     const indexOfCity = newCityHistory.indexOf(cityName);
 
@@ -30,27 +30,23 @@ export const HistoryProvider = ({ children }) => {
     newCityHistory.push(cityName);
 
     setCityHistory(newCityHistory);
-    localStorage.setItem("cityHistory", JSON.stringify(newCityHistory));
+    localStorage.setItem('cityHistory', JSON.stringify(newCityHistory));
   };
 
   const context = {
     addCityToHistory,
     cityHistory,
-    clearHistory,
+    clearHistory
   };
 
-  return (
-    <HistoryContext.Provider value={context}>
-      {children}
-    </HistoryContext.Provider>
-  );
+  return <HistoryContext.Provider value={context}>{children}</HistoryContext.Provider>;
 };
 
 export const useHistory = () => {
   const ctx = useContext(HistoryContext);
 
   if (!ctx) {
-    throw new Error("Use Context Inside Provider");
+    throw new Error('Use Context Inside Provider');
   }
 
   return ctx;

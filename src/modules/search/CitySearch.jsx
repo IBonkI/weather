@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { GeoAltFill } from "react-bootstrap-icons";
+import { useState } from 'react';
+import { Button, Col, Form, Row } from 'react-bootstrap';
+import { GeoAltFill } from 'react-bootstrap-icons';
 
 const getAPIURL = (lat, lon) =>
-  `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=${"1"}&appid=${
+  `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=${'1'}&appid=${
     import.meta.env.VITE_OPEN_WEATHER_API_KEY
   }`;
 
 export const CitySearch = ({ onSubmit }) => {
-  const [cityQuery, setCityQuery] = useState("");
+  const [cityQuery, setCityQuery] = useState('');
 
   const handleChangeInput = (e) => {
     setCityQuery(e.target.value);
@@ -21,13 +21,13 @@ export const CitySearch = ({ onSubmit }) => {
 
     onSubmit(cityQuery);
 
-    setCityQuery("");
+    setCityQuery('');
   };
 
   var options = {
     enableHighAccuracy: true,
     timeout: 5000,
-    maximumAge: 0,
+    maximumAge: 0
   };
   function success(pos) {
     var crd = pos.coords;
@@ -48,13 +48,6 @@ export const CitySearch = ({ onSubmit }) => {
         }
         onSubmit(data[0].name);
       });
-
-    console.log(pos, "#########");
-
-    console.log("Your current position is:");
-    console.log(`Latitude : ${crd.latitude}`);
-    console.log(`Longitude: ${crd.longitude}`);
-    console.log(`More or less ${crd.accuracy} meters.`);
   }
 
   function errors(err) {
@@ -66,17 +59,13 @@ export const CitySearch = ({ onSubmit }) => {
       return;
     }
 
-    navigator.permissions.query({ name: "geolocation" }).then((result) => {
-      if (result.state === "granted") {
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state === 'granted') {
         return navigator.geolocation.getCurrentPosition(success);
       }
 
-      if (result.state === "prompt") {
-        return navigator.geolocation.getCurrentPosition(
-          success,
-          errors,
-          options
-        );
+      if (result.state === 'prompt') {
+        return navigator.geolocation.getCurrentPosition(success, errors, options);
       }
     });
   };
@@ -85,11 +74,7 @@ export const CitySearch = ({ onSubmit }) => {
     <Form onSubmit={handleSubmit}>
       <Row>
         <Col>
-          <Form.Control
-            type="search"
-            value={cityQuery || ""}
-            onChange={handleChangeInput}
-          />
+          <Form.Control type="search" value={cityQuery || ''} onChange={handleChangeInput} />
         </Col>
         <Col>
           <Button type="button" onClick={getGeoLocation}>
