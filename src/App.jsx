@@ -1,4 +1,4 @@
-import { HistoryProvider } from './modules/search/SearchContext';
+import { HistoryProvider } from './modules/history/HistoryContext';
 import { WeatherProvider } from './modules/weather/WeatherContext';
 import { WeatherForecast } from './pages/WeatherForecast';
 

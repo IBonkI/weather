@@ -1,7 +1,10 @@
-import { Button, Col, Image, Row } from 'react-bootstrap';
+import { Button, Image } from 'react-bootstrap';
+import { DropletFill } from 'react-bootstrap-icons';
 import { dateDiffInDays, getDateFromUnix } from '../utils/date';
-import { getWeatherIcon } from './weather.utils';
+import { getHighestTemperture, getLowestTemperture, getWeatherIcon } from './weather.utils';
 import { useWeather } from './WeatherContext';
+import './DailyWeather.css';
+import { HBox } from '../../components/layout';
 
 export const DailyWeather = () => {
   const { weatherData, setForecastDay, forecastDay } = useWeather();
@@ -14,8 +17,9 @@ export const DailyWeather = () => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
       {weatherData.list.map((hourlyForecasts, i) => {
+        const isActive = forecastDay === i;
         const date = getDateFromUnix(hourlyForecasts[0].dt);
-        let weekday = date.toLocaleDateString('de-DE', { weekday: 'long' });
+        let weekday = date.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric' });
 
         const dayDiff = dateDiffInDays(date, new Date());
 
@@ -28,34 +32,56 @@ export const DailyWeather = () => {
         return (
           <Button
             as="div"
+            className={isActive ? 'withArrow' : ''}
             style={{
-              background:
-                forecastDay === i ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.03)',
+              background: isActive ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.03)',
               border: 'none',
               borderRadius: '6px',
-              padding: '10px',
+              padding: '15px 40px 0px 40px',
               display: 'flex',
-              flexBasis: '125px',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              color: isActive ? '#ffff' : '#ffffffbf'
             }}
             key={i}
             onClick={() => setForecastDay(i)}>
-            {weekday}
-            <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <Image width="103%" src={getWeatherIcon(hourlyForecasts[0].weather[0].icon)} />
-              <Col
+            <span style={{ textAlign: 'left' }}>{weekday}</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div>
+                <Image
+                  style={{ flex: 1 }}
+                  src={getWeatherIcon(hourlyForecasts[0].weather[0].icon)}
+                />
+              </div>
+              <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'column'
-                }}
-                xs={12}>
-                <span style={{ fontWeight: 'bold' }}>
-                  {Math.floor(hourlyForecasts[0].main.temp)}°
-                </span>
-                <span>{hourlyForecasts[0].weather[0].description}</span>
-              </Col>
-            </Row>
+                  justifyContent: 'space-between',
+                  gap: '60px'
+                }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontWeight: 'bold' }}>
+                    {Math.floor(getHighestTemperture(hourlyForecasts))}°
+                  </span>
+                  <span>{Math.floor(getLowestTemperture(hourlyForecasts))}°</span>
+                </div>
+                {isActive && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
+                    <span style={{ fontSize: '14px' }}>
+                      {hourlyForecasts[0].weather[0].description}
+                    </span>
+                    <HBox
+                      styles={{
+                        fontSize: '14px',
+                        alignItems: 'center',
+                        gap: '5px'
+                      }}>
+                      <DropletFill />
+                      <span>{Math.floor(hourlyForecasts[0].pop * 100)}%</span>
+                    </HBox>
+                  </div>
+                )}
+              </div>
+            </div>
           </Button>
         );
       })}

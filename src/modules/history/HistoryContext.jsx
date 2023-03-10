@@ -1,9 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useWeatherState } from '../weather/WeatherContext';
+import { deserializeCityHistory, serializedCityHistory } from './utils';
 
 const HistoryContext = createContext();
 
 export const HistoryProvider = ({ children }) => {
   const [cityHistory, setCityHistory] = useState([]);
+  const { fetchCurrentWeatherData } = useWeatherState();
 
   const clearHistory = () => {
     setCityHistory([]);
@@ -15,22 +18,30 @@ export const HistoryProvider = ({ children }) => {
     if (!parsedHistory) {
       return;
     }
-    setCityHistory(parsedHistory);
+    parsedHistory.forEach((h) => {
+      const { lat, lon, cityName } = deserializeCityHistory(h);
+      fetchCurrentWeatherData({ lat, lon, cityName }, (data) => {
+        addCityToHistory(data);
+      });
+    });
   }, []);
 
-  const addCityToHistory = (cityName) => {
-    console.log('hier drin, cityName', cityName);
+  const addCityToHistory = (city) => {
     const newCityHistory = cityHistory;
-    const indexOfCity = newCityHistory.indexOf(cityName);
+    const indexOfCity = newCityHistory.map((cH) => cH.name).indexOf(city.name);
 
     if (indexOfCity > -1) {
       newCityHistory.splice(indexOfCity, 1);
     }
 
-    newCityHistory.push(cityName);
+    newCityHistory.push(city);
 
     setCityHistory(newCityHistory);
-    localStorage.setItem('cityHistory', JSON.stringify(newCityHistory));
+
+    const serializedCityHistoryHistory = newCityHistory.map((cH) =>
+      serializedCityHistory(cH.coord.lat, cH.coord.lon, cH.name)
+    );
+    localStorage.setItem('cityHistory', JSON.stringify(serializedCityHistoryHistory));
   };
 
   const context = {

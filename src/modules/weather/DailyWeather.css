@@ -1,0 +1,16 @@
+.withArrow {
+    position: relative;
+}
+
+.withArrow::after {
+    display: block;
+    content: '';
+    border-width: 8px 6px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.4) transparent transparent transparent;
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+}

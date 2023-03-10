@@ -3,23 +3,26 @@ import { groupForecastByDay } from './weather.utils';
 
 const API_URL_CONFIG = `&units=metric&lang=de&appid=${import.meta.env.VITE_OPEN_WEATHER_API_KEY}`;
 
-const getForecastApiUrl = (city) =>
-  `${import.meta.env.VITE_OPEN_WEATHER_FORECAST_API_URL}?q=${city}${API_URL_CONFIG}`;
+const getForecastApiUrl = (lat, lon, cityName) =>
+  `${
+    import.meta.env.VITE_OPEN_WEATHER_FORECAST_API_URL
+  }?q=${cityName}&lat=${lat}&lon=${lon}${API_URL_CONFIG}`;
 
-const getApiUrl = (city) =>
-  `${import.meta.env.VITE_OPEN_WEATHER_API_URL}?q=${city}${API_URL_CONFIG}`;
+const getApiUrl = (lat, lon, cityName) =>
+  `${
+    import.meta.env.VITE_OPEN_WEATHER_API_URL
+  }?q=${cityName}&lat=${lat}&lon=${lon}${API_URL_CONFIG}`;
 
-const WeatherContext = createContext();
-
-export const WeatherProvider = ({ children }) => {
+// Use when wanting to use own State
+export const useWeatherState = () => {
   const [weatherData, setWeatherData] = useState();
   const [currentWeatherData, setCurrentWeatherData] = useState();
   const [forecastDay, setForecastDay] = useState(0);
 
-  const fetchWeatherData = (cityName, cb) => {
+  const fetchWeatherData = (city, cb) => {
     let isOk = false;
-    cityName &&
-      fetch(getForecastApiUrl(cityName.replace(' ', '+')))
+    city &&
+      fetch(getForecastApiUrl(city.lat, city.lon, city.cityName))
         .then((res) => {
           if (!res.ok) {
             return res.json();
@@ -38,10 +41,10 @@ export const WeatherProvider = ({ children }) => {
         });
   };
 
-  const fetchCurrentWeatherData = (cityName, cb) => {
+  const fetchCurrentWeatherData = (city, cb) => {
     let isOk = false;
-    cityName &&
-      fetch(getApiUrl(cityName.replace(' ', '+')))
+    city &&
+      fetch(getApiUrl(city.lat, city.lon, city.cityName))
         .then((res) => {
           if (!res.ok) {
             return res.json();
@@ -58,7 +61,7 @@ export const WeatherProvider = ({ children }) => {
           cb && cb(data);
         });
   };
-  const context = {
+  return {
     weatherData,
     currentWeatherData,
     forecastDay,
@@ -66,7 +69,12 @@ export const WeatherProvider = ({ children }) => {
     fetchWeatherData,
     fetchCurrentWeatherData
   };
+};
 
+const WeatherContext = createContext();
+
+export const WeatherProvider = ({ children }) => {
+  const context = useWeatherState();
   return <WeatherContext.Provider value={context}>{children}</WeatherContext.Provider>;
 };
 

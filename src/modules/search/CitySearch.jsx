@@ -1,87 +1,121 @@
-import { useState } from 'react';
-import { Button, Col, Form, Row } from 'react-bootstrap';
-import { GeoAltFill } from 'react-bootstrap-icons';
-
-const getAPIURL = (lat, lon) =>
-  `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=${'1'}&appid=${
-    import.meta.env.VITE_OPEN_WEATHER_API_KEY
-  }`;
+import { useCallback, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import { Search } from 'react-bootstrap-icons';
+import { HBox } from '../../components/layout';
+import { debounce } from '../utils/performance';
+import './CitySearch.css';
+import { CitySearchCurrentLocation } from './CitySearchCurrentLocation';
+import { CitySearchSuggestions } from './CitySearchSuggestions';
 
 export const CitySearch = ({ onSubmit }) => {
   const [cityQuery, setCityQuery] = useState('');
+  const [citySuggestions, setCitySuggestions] = useState();
+  const [isInInput, setIsInInput] = useState(false);
+
+  const fetchSuggestions = useCallback((input) => {
+    const mapToSuggestions = (apiSuggestion) => {
+      if (apiSuggestion.length === 0) {
+        return;
+      }
+      return apiSuggestion.map((s) => ({
+        addressLine1: s.properties.address_line1,
+        addressLine2: s.properties.address_line2,
+        lat: s.properties.lat,
+        lon: s.properties.lon,
+        cityName: s.properties.city
+      }));
+    };
+    fetch(
+      `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&apiKey=${
+        import.meta.env.VITE_GEO_APIFY_API_KEY
+      }`
+    )
+      .then((response) => response.json())
+      .then((result) => setCitySuggestions(mapToSuggestions(result.features)))
+      .catch(() => setCitySuggestions(undefined));
+  }, []);
+
+  const debounceFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), [fetchSuggestions]);
 
   const handleChangeInput = (e) => {
-    setCityQuery(e.target.value);
+    const input = e.target.value;
+    setCityQuery(input);
+    debounceFetchSuggestions(input);
   };
 
+  // TODO: Replace [0] with currentlySelected
+  const handleClickSuggestion =
+    (
+      lat = citySuggestions[0].lat,
+      lon = citySuggestions[0].lon,
+      cityName = citySuggestions[0].cityName
+    ) =>
+    () => {
+      onSubmit(lat, lon, cityName);
+      setCityQuery('');
+      setCitySuggestions(undefined);
+    };
+
   const handleSubmit = (e) => {
+    // Dirty Fix: Use citySuggestion instead of text passed by User
+    // !Important: But keep this when suggestion API is not working
+    console.log(citySuggestions, '##########');
     if (e) {
       e.preventDefault();
     }
-
-    onSubmit(cityQuery);
-
-    setCityQuery('');
-  };
-
-  var options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0
-  };
-  function success(pos) {
-    var crd = pos.coords;
-    let isOk = false;
-
-    fetch(getAPIURL(crd.latitude, crd.longitude))
-      .then((res) => {
-        if (!res.ok) {
-          return res.json();
-        }
-
-        isOk = true;
-        return res.json();
-      })
-      .then((data) => {
-        if (!isOk) {
-          return;
-        }
-        onSubmit(data[0].name);
-      });
-  }
-
-  function errors(err) {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
-  }
-
-  const getGeoLocation = () => {
-    if (!navigator.geolocation) {
+    if (!citySuggestions) {
       return;
     }
 
-    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-      if (result.state === 'granted') {
-        return navigator.geolocation.getCurrentPosition(success);
-      }
+    handleClickSuggestion()();
+    setCityQuery('');
+  };
 
-      if (result.state === 'prompt') {
-        return navigator.geolocation.getCurrentPosition(success, errors, options);
-      }
-    });
+  const handleFocusSearch = () => {
+    setIsInInput(true);
+  };
+
+  const handleBlurSearch = () => {
+    setTimeout(() => {
+      setIsInInput(false);
+    }, 200);
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Row>
-        <Col>
-          <Form.Control type="search" value={cityQuery || ''} onChange={handleChangeInput} />
-        </Col>
-        <Col>
-          <Button type="button" onClick={getGeoLocation}>
-            <GeoAltFill />
-          </Button>
-        </Col>
-      </Row>
+      <HBox gap={10}>
+        <CitySearchCurrentLocation onClick={onSubmit} />
+        <div style={{ position: 'relative', width: '300px' }}>
+          <Form.Control
+            placeholder="Suche"
+            type="search"
+            value={cityQuery || ''}
+            onChange={handleChangeInput}
+            onFocus={handleFocusSearch}
+            onBlur={handleBlurSearch}
+          />
+          <span
+            style={{
+              position: 'absolute',
+              right: 15,
+              top: 0,
+              bottom: 0,
+              marginTop: 'auto',
+              marginBottom: 'auto',
+              color: 'grey',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+            <Search />
+          </span>
+          {!!citySuggestions && isInInput && (
+            <CitySearchSuggestions
+              citySuggestions={citySuggestions}
+              onClick={handleClickSuggestion}
+            />
+          )}
+        </div>
+      </HBox>
     </Form>
   );
 };

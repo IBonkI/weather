@@ -22,3 +22,13 @@ export const groupForecastByDay = (forecast) => {
 };
 
 export const getWeatherIcon = (iconName) => `https://openweathermap.org/img/wn/${iconName}@2x.png`;
+
+export const getHighestTemperture = (weatherData) => {
+  const maxTemps = weatherData.map((w) => w.main.temp_max);
+  return Math.max(...maxTemps);
+};
+
+export const getLowestTemperture = (weatherData) => {
+  const minTemps = weatherData.map((w) => w.main.temp_min);
+  return Math.min(...minTemps);
+};
