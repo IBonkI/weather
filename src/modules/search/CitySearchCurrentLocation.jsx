@@ -48,7 +48,11 @@ export const CitySearchCurrentLocation = ({ onClick }) => {
     });
   };
   return (
-    <Button variant="outline-secondary" type="button" onClick={getGeoLocation}>
+    <Button
+      variant="secondary"
+      type="button"
+      style={{ color: '#F0EBCE', background: '#AA8B56' }}
+      onClick={getGeoLocation}>
       <GeoAltFill />
     </Button>
   );

@@ -102,6 +102,8 @@ export const HourlyWeather = () => {
                 position: 'absolute',
                 right: -20,
                 top: 0,
+                color: '#F0EBCE',
+                background: '#AA8B56',
                 marginTop: 'auto',
                 marginBottom: 'auto',
                 bottom: 0,
@@ -114,6 +116,8 @@ export const HourlyWeather = () => {
               onClick={handleScrollLeft}
               style={{
                 position: 'absolute',
+                color: '#F0EBCE',
+                background: '#AA8B56',
                 left: -20,
                 top: 0,
                 marginTop: 'auto',
