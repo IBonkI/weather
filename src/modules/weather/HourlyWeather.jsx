@@ -4,6 +4,7 @@ import { getDateFromUnix } from '../utils/date';
 import { getWeatherIcon } from './weather.utils';
 import { useWeather } from './WeatherContext';
 import './HourlyWeather.css';
+import { CaretLeftFill, CaretRightFill } from 'react-bootstrap-icons';
 
 export const HourlyWeather = () => {
   const { weatherData, forecastDay } = useWeather();
@@ -16,7 +17,7 @@ export const HourlyWeather = () => {
       return;
     }
 
-    scrollContainer.current.scrollLeft += 225;
+    scrollContainer.current.scrollLeft += 280;
   };
 
   const handleScrollLeft = () => {
@@ -43,14 +44,15 @@ export const HourlyWeather = () => {
     return <></>;
   }
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', width: '100%' }}>
       <div
         className="hideScrollbar"
         ref={scrollContainer}
         style={{
           display: 'flex',
+          width: '100%',
           gap: '10px',
-          width: '800px',
+          margin: '0px 40px',
           overflow: 'auto',
           scrollBehavior: 'smooth'
         }}>
@@ -60,7 +62,7 @@ export const HourlyWeather = () => {
               key={i}
               style={{
                 flexBasis: '250px',
-                background: 'rgba(255, 255, 255, 0.03)',
+                background: 'rgba(255, 255, 255, 0.2)',
                 borderRadius: '6px',
                 padding: '10px',
                 flexGrow: 0,
@@ -86,7 +88,7 @@ export const HourlyWeather = () => {
                   }}
                   xs={6}>
                   <span style={{ fontWeight: 'bold' }}>{Math.floor(forecast.main.temp)}°</span>
-                  <span>{forecast.weather[0].description}</span>
+                  <span style={{ fontSize: '12px' }}>{forecast.weather[0].description}</span>
                 </Col>
               </Row>
             </div>
@@ -98,7 +100,7 @@ export const HourlyWeather = () => {
               onClick={handleScrollRight}
               style={{
                 position: 'absolute',
-                right: -50,
+                right: -20,
                 top: 0,
                 marginTop: 'auto',
                 marginBottom: 'auto',
@@ -106,13 +108,13 @@ export const HourlyWeather = () => {
                 width: '50px',
                 height: '50px'
               }}>
-              {'>'}
+              <CaretRightFill />
             </button>
             <button
               onClick={handleScrollLeft}
               style={{
                 position: 'absolute',
-                left: -50,
+                left: -20,
                 top: 0,
                 marginTop: 'auto',
                 marginBottom: 'auto',
@@ -120,7 +122,7 @@ export const HourlyWeather = () => {
                 width: '50px',
                 height: '50px'
               }}>
-              {'<'}
+              <CaretLeftFill />
             </button>
           </>
         )}

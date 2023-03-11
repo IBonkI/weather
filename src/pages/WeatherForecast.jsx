@@ -22,7 +22,7 @@ export const WeatherForecast = () => {
 
   return (
     <div style={{ flex: 1 }}>
-      <Navbar fixed="top" bg="dark">
+      <Navbar fixed="top" style={{ background: '#395144' }}>
         <Container>
           <HBox styles={{ alignItems: 'center' }} gap="30px">
             <CitySearch onSubmit={fetchAndAddToHistory} />
@@ -34,14 +34,18 @@ export const WeatherForecast = () => {
         style={{
           display: 'flex',
           alignItems: 'center',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          gap: '100px'
         }}>
         {weatherData && (
           <>
             <CurrentWeather />
-            <DailyWeather />
-            <div className="mt-4">
-              <HourlyWeather />
+            <div>
+              <h2 className="mb-4">5-Tages Vorschau:</h2>
+              <DailyWeather />
+              <div className="mt-4">
+                <HourlyWeather />
+              </div>
             </div>
           </>
         )}

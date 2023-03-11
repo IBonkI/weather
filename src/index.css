@@ -4,8 +4,6 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -14,8 +12,8 @@
   -webkit-text-size-adjust: 100%;
 
   /* --bs-body-bg: #242424; */
-  --bs-body-bg: url('/assets/sunnywebp.webp');
-  --bs-body-color: rgba(255, 255, 255, 0.87);
+  --bs-body-bg: #4E6C50;
+  --bs-body-color: #F0EBCE;
 
   --data-bs-theme: 'dark';
 }

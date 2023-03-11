@@ -14,13 +14,24 @@ export const CitySearchHistory = ({ onClick }) => {
       {cityHistory &&
         cityHistory.length > 0 &&
         cityHistory.map((c, i) => (
-          <span onClick={() => handleClickHistory(c)} key={c + i}>
-            <img src={getWeatherIcon(c.weather[0].icon)} height="50px" width="50px" />
-            {c.name}
-          </span>
+          <div
+            key={c + i}
+            onClick={() => handleClickHistory(c)}
+            style={{
+              display: 'inline',
+              borderRight: '1px solid #F0EBCE',
+              padding: '5px 20px',
+              cursor: 'pointer',
+              userSelect: 'none'
+            }}>
+            <span>
+              <img src={getWeatherIcon(c.weather[0].icon)} height="50px" width="50px" />
+              {c.name}
+            </span>
+          </div>
         ))}
       {cityHistory && cityHistory.length > 0 && (
-        <XCircle className="ml-4" onClick={() => clearHistory()} />
+        <XCircle className="mx-3" style={{ cursor: 'pointer' }} onClick={() => clearHistory()} />
       )}
     </div>
   );

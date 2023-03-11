@@ -5,6 +5,7 @@ import { getHighestTemperture, getLowestTemperture, getWeatherIcon } from './wea
 import { useWeather } from './WeatherContext';
 import './DailyWeather.css';
 import { HBox } from '../../components/layout';
+import { mostFrequentString } from '../utils/array';
 
 export const DailyWeather = () => {
   const { weatherData, setForecastDay, forecastDay } = useWeather();
@@ -49,7 +50,11 @@ export const DailyWeather = () => {
               <div>
                 <Image
                   style={{ flex: 1 }}
-                  src={getWeatherIcon(hourlyForecasts[0].weather[0].icon)}
+                  src={getWeatherIcon(
+                    mostFrequentString(
+                      hourlyForecasts.map((f) => f.weather[0].icon.split(/[nd]+/)[0])
+                    ) + 'd'
+                  )}
                 />
               </div>
               <div
@@ -67,7 +72,7 @@ export const DailyWeather = () => {
                 {isActive && (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
                     <span style={{ fontSize: '14px' }}>
-                      {hourlyForecasts[0].weather[0].description}
+                      {mostFrequentString(hourlyForecasts.map((f) => f.weather[0].description))}
                     </span>
                     <HBox
                       styles={{
@@ -76,7 +81,9 @@ export const DailyWeather = () => {
                         gap: '5px'
                       }}>
                       <DropletFill />
-                      <span>{Math.floor(hourlyForecasts[0].pop * 100)}%</span>
+                      <span>
+                        {Math.floor(Math.max(...hourlyForecasts.map((f) => f.pop)) * 100)}%
+                      </span>
                     </HBox>
                   </div>
                 )}
