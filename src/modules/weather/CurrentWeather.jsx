@@ -4,63 +4,48 @@ import { getWeatherIcon } from './weather.utils';
 import { useWeather } from './WeatherContext';
 
 export const CurrentWeather = () => {
-  const { weatherData, forecastDay, currentWeatherData } = useWeather();
+  const { currentWeatherData } = useWeather();
 
-  const getTimeForecastIndexForMiddle =
-    weatherData && weatherData.list[forecastDay].length - 1 < 5
-      ? weatherData.list[forecastDay].length - 1
-      : 5;
-
-  const isToday = forecastDay === 0;
-
-  const weatherSelector = isToday
-    ? currentWeatherData
-    : weatherData.list[forecastDay][getTimeForecastIndexForMiddle];
-
-  if (!weatherData || !currentWeatherData) {
+  if (!currentWeatherData) {
     return <></>;
   }
 
   return (
     <VBox styles={{ width: '100%', marginTop: '100px' }}>
-      <h1>{weatherData.city.name}</h1>
+      <h1>{currentWeatherData.name}</h1>
 
       <HBox
         styles={{
           justifyContent: 'space-between',
-          margin: '40px 250px',
+          margin: '40px 150px',
           padding: '20px 100px',
+          border: 'solid 1px rgb(170, 139, 86)',
+          borderRadius: '6px',
           background: 'rgba(255, 255, 255, 0.03)'
         }}>
         <div>
-          <img src={getWeatherIcon(weatherSelector.weather[0].icon)} />
+          <img src={getWeatherIcon(currentWeatherData.weather[0].icon, true)} alt="" />
 
-          <span>
-            {Math.floor(weatherSelector.main.temp)}
+          <span style={{ fontSize: '24px', fontWeight: 'bold' }}>
+            {Math.floor(currentWeatherData.main.temp)}
             °C
           </span>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between'
+
+        <VBox
+          styles={{
+            paddingTop: '20px',
+            alignItems: 'flex-end'
           }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end'
-            }}>
-            <span>Wetter</span>
-            <span>
-              {getDateFromUnix(weatherSelector.dt).toLocaleDateString('de-DE', {
-                weekday: 'long',
-                hour: 'numeric'
-              })}
-            </span>
-            <span>{weatherSelector.weather[0].description}</span>
-          </div>
-        </div>
+          <span style={{ fontSize: '21px', fontWeight: 'bold' }}>Wetter</span>
+          <span style={{ fontSize: '18px' }}>
+            {getDateFromUnix(currentWeatherData.dt).toLocaleDateString('de-DE', {
+              weekday: 'long',
+              hour: 'numeric'
+            })}
+          </span>
+          <span style={{ fontSize: '18px' }}>{currentWeatherData.weather[0].description}</span>
+        </VBox>
       </HBox>
     </VBox>
   );

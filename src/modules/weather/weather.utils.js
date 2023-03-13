@@ -21,7 +21,8 @@ export const groupForecastByDay = (forecast) => {
   return groupedForecast;
 };
 
-export const getWeatherIcon = (iconName) => `https://openweathermap.org/img/wn/${iconName}@2x.png`;
+export const getWeatherIcon = (iconName, isBig = false) =>
+  `https://openweathermap.org/img/wn/${iconName}@${isBig ? '4x' : '2x'}.png`;
 
 export const getHighestTemperture = (weatherData) => {
   const maxTemps = weatherData.map((w) => w.main.temp_max);

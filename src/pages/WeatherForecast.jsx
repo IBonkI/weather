@@ -35,7 +35,7 @@ export const WeatherForecast = () => {
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
-          gap: '100px'
+          gap: '25px'
         }}>
         {weatherData && (
           <>

@@ -14,7 +14,6 @@ export const DailyWeather = () => {
     return <></>;
   }
 
-  // TODO: Replace [0]
   return (
     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
       {weatherData.list.map((hourlyForecasts, i) => {
@@ -71,7 +70,7 @@ export const DailyWeather = () => {
                 </div>
                 {isActive && (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
-                    <span style={{ fontSize: '14px' }}>
+                    <span style={{ fontSize: '14px', textAlign: 'end' }}>
                       {mostFrequentString(hourlyForecasts.map((f) => f.weather[0].description))}
                     </span>
                     <HBox
